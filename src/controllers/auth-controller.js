@@ -8,7 +8,7 @@ class AuthController {
             const userExist = await User.findOne({email})
     
             if (userExist){
-                return res.status(404).json({status:false, message:"User already exists."})
+                return res.status(400).json({status:false, message:"User already exists."})
             }
 
             const hashedPassword = await bcrypt.hash(password, +process.env.SALT_ROUNDS);
@@ -26,7 +26,7 @@ class AuthController {
             const { email, password} = req.body;
             const user = await User.findOne({email})
             if(!user){
-                return res.status(400).json({status:false, message:"User dosen't exists."})
+                return res.status(404).json({status:false, message:"User dosen't exists."})
             }
 
             const isPasswordCorrect = await bcrypt.compare(password, user.password);
@@ -36,7 +36,7 @@ class AuthController {
 
             const {_id:id, firstName, lastName} = user
             const token = jwt.sign({email, firstName, lastName, id}, process.env.JWT_SECRET)
-            res.status(201).json({status:true, message:"User successfully loggedin.", data:{user, token}})
+            res.status(200).json({status:true, message:"User successfully loggedin.", data:{user, token}})
 
         }catch (err) {
             console.log(err)
