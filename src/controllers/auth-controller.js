@@ -1,19 +1,48 @@
 const User = require("../models/users")
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
 class AuthController {
     async register (req,res) {
-        const {firstName, lastName, email, password} = req.body;
-        const userExist = await User.findOne({email})
+        try{
+            const {firstName, lastName, email, password} = req.body;
+            const userExist = await User.findOne({email})
+    
+            if (userExist){
+                return res.status(404).json({status:false, message:"User already exists."})
+            }
 
-        if (userExist){
-            return res.status(404).json({status:false, message:"User not found."})
+            const hashedPassword = await bcrypt.hash(password, +process.env.SALT_ROUNDS);
+            const user = new User({firstName, lastName, email, password:hashedPassword})
+            await user.save()
+            res.status(201).json({status:true, message:"User successfully created", data:{user}})
+        }catch (err) {
+            console.log(err)
+            res.status(500).json({status:false, message:"Internal server error."});
         }
+    }
 
-        const user = new User({firstName, lastName, email, password})
-        await user.save()
-        const token = jwt.sign({email,firstName, lastname}, process.env.JWT_SECRET)
+    async login (req, res) {
+        try{
+            const { email, password} = req.body;
+            const user = await User.findOne({email})
+            if(!user){
+                return res.status(400).json({status:false, message:"User dosen't exists."})
+            }
 
-        res.status(201).json({status:true, message:"User successfully created", data:{user, token}})
+            const isPasswordCorrect = await bcrypt.compare(password, user.password);
+            if(!isPasswordCorrect){
+                return res.status(400).json({status:false, message:"Invalid login Credentials."})
+            }
+
+            const {_id:id, firstName, lastName} = user
+            const token = jwt.sign({email, firstName, lastName, id}, process.env.JWT_SECRET)
+            res.status(201).json({status:true, message:"User successfully loggedin.", data:{user, token}})
+
+        }catch (err) {
+            console.log(err)
+            res.status(500).json({status:false, message:"Internal server error."});
+        }
+        
     }
 
 
