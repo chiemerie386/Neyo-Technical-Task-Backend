@@ -7,6 +7,9 @@ const SketchSchema = new Schema(
       type: String,
     },
     collaborators: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
+    body: {
+        type: String
+    },
   },
   { timestamps: true }
 );
