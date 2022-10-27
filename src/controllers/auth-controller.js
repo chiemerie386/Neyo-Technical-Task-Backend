@@ -14,7 +14,8 @@ class AuthController {
             const hashedPassword = await bcrypt.hash(password, +process.env.SALT_ROUNDS);
             const user = new User({firstName, lastName, email, password:hashedPassword})
             await user.save()
-            res.status(201).json({status:true, message:"User successfully created", data:{user}})
+            const token = jwt.sign({email, firstName, lastName, id:user._id}, process.env.JWT_SECRET)
+            res.status(201).json({status:true, message:"User successfully created", data:{user, token}})
         }catch (err) {
             console.log(err)
             res.status(500).json({status:false, message:"Internal server error."});
