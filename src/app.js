@@ -6,7 +6,7 @@ var logger = require('morgan');
 const passport = require('passport')
 const cors = require('cors')
 require('dotenv').config()
-// require('./connect')()
+require('./connect')()
 
 var indexRouter = require('./routes/index');
 
@@ -18,7 +18,7 @@ app.set('view engine', 'jade');
 
 app.use(cors())
 app.use(passport.initialize())
-app.use(passport.session())
+// app.use(passport.session())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

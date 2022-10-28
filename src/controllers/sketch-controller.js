@@ -89,6 +89,7 @@ class SketchController {
             if(!sketch){
                 return res.status(404).json({status:false, message:"Sketch not found."})
             }
+            //allowing all users have access to all sketch
             // if(!(sketch.collaborators && sketch.collaborators.includes(userId))){
             //     return res.status(403).json({status:false, message:"You don't have access to access this note."})
             // }
