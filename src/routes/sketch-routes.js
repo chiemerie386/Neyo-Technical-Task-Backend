@@ -6,11 +6,11 @@ const validation = require('../middlewares/joi-validation')
 const {createSketchSchema, updateSketchSchema} = require('../middlewares/validation-schemas/sketch-schema')
 
 router.use(authorizeUser)
-router.get('/getsketch/:sketchId',  sketchController.getSketch);
+router.get('/getsketch/:sketchId',  sketchController.getOneSketch);
 router.get('/getSketch',  sketchController.getSketch);
 router.post('/create', validation(createSketchSchema), sketchController.createSketch);
 router.post('/join/:sketchId', sketchController.joinSketch);
-router.post('/update/:sketchId', validation(updateSketchSchema), sketchController.updateSketch);
+router.put('/update/:sketchId', validation(updateSketchSchema), sketchController.updateSketch);
 
 
 

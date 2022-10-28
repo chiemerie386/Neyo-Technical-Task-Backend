@@ -4,15 +4,16 @@ const bcrypt = require("bcrypt")
 class AuthController {
     async register (req,res) {
         try{
-            const {firstName, lastName, email, password} = req.body;
+            const {firstName, lastName, email, password, image} = req.body;
             const userExist = await User.findOne({email})
     
             if (userExist){
                 return res.status(400).json({status:false, message:"User already exists."})
             }
+            const randomColor = Math.floor(Math.random()*16777215).toString(16);
 
             const hashedPassword = await bcrypt.hash(password, +process.env.SALT_ROUNDS);
-            const user = new User({firstName, lastName, email, password:hashedPassword})
+            const user = new User({firstName, lastName, email, password:hashedPassword, image, colour:randomColor})
             await user.save()
             const token = jwt.sign({email, firstName, lastName, id:user._id}, process.env.JWT_SECRET)
             res.status(201).json({status:true, message:"User successfully created", data:{user, token}})

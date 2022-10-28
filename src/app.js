@@ -3,9 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const passport = require('passport')
 const cors = require('cors')
 require('dotenv').config()
-require('./connect')()
+// require('./connect')()
 
 var indexRouter = require('./routes/index');
 
@@ -16,6 +17,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 app.use(cors())
+app.use(passport.initialize())
+app.use(passport.session())
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -36,8 +39,8 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+ return  res.status(err.status || 500);
+  // res.render('error');
 });
 
 module.exports = app;

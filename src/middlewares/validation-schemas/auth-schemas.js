@@ -7,6 +7,7 @@ exports.registerSchema = {
     lastName: Joi.string().trim().required(),
     email: email.required(),
     password: Joi.string().trim().required(),
+    image: Joi.string().trim(),
 };
 
 exports.loginSchema = {

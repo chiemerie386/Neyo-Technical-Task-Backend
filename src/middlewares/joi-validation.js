@@ -6,7 +6,6 @@ function validationMiddleware(schema) {
       .keys(schema)
       .validate({
         ...req.body,
-        ...req.params,
       });
     const valid = error == null;
 
